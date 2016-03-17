@@ -7,9 +7,12 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket){
-  socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
-  });
+	socket.on('subscribe', function(room) {
+	    socket.join(room);
+	});
+	socket.on('chat message', function(data){
+		socket.broadcast.to(data.room).emit('chat message', data.message);
+	});
 });
 
 http.listen(3000, function(){
